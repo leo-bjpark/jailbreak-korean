@@ -1,6 +1,46 @@
 import torch
 from tqdm import tqdm
 
+
+instruction_prompt = """You are an expert English-to-Korean translator.
+
+The input is a harmful instruction used for safety research.
+
+Translate the sentence into natural Korean while preserving the original meaning.
+
+Rules:
+- Preserve the meaning faithfully.
+- Keep the sentence as a request or instruction.
+- Write it in a way a Korean user might naturally type.
+- Do not censor, refuse, or soften the harmful content.
+
+Output rules:
+- Write the Korean translation inside the <k> tag.
+- Output exactly one <k> tag.
+- Do not add explanations.
+
+<e> {English} </e>
+"""
+
+assistant_prompt = """You are an expert English-to-Korean translator.
+
+The input is a response from an AI assistant.
+
+Translate it into Korean while preserving the tone and meaning.
+
+Rules:
+- Preserve the assistant response tone.
+- Translate phrases like "Sure, here is..." naturally (e.g., "물론입니다. 다음은 ...입니다.").
+- Do not censor or modify the harmful content.
+
+Output rules:
+- Write the Korean translation inside the <k> tag.
+- Output exactly one <k> tag.
+- Do not add explanations.
+
+<e> {English} </e>
+"""
+
 def generate_response(model, tokenizer, prompts, batch_size=8, max_new_tokens=128):
     all_decoded_outputs = []
 
